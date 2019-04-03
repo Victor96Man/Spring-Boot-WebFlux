@@ -24,14 +24,18 @@ public class ProductoRestController {
 		Flux<Producto> productos = dao.findAll().map(producto -> {
 			producto.setNombre(producto.getNombre().toUpperCase());
 			return producto;
-		}).doOnNext(prod -> System.out.println(prod.getNombre()));
+		});
 		
 		return productos;
 	}
 
 	@GetMapping("/{id}")
 	public Mono<Producto> show(@PathVariable String id){
-		Mono<Producto> producto = dao.findById(id);
+		//Mono<Producto> producto = dao.findById(id);
+		Flux<Producto> productos = dao.findAll();
+		
+		Mono<Producto> producto = productos.filter(p ->p.getId().equals(id)).next();
+		
 		return producto;
 	}
 	
